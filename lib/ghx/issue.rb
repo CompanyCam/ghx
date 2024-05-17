@@ -55,6 +55,5 @@ module GHX
       self.milestone = hash["milestone"]
       self.assignees = hash["assignees"]
     end
-
   end
 end

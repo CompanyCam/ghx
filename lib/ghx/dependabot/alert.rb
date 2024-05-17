@@ -126,8 +126,16 @@ module GHX
         @security_vulnerability = SecurityVulnerability.new(json_data["security_vulnerability"])
         @url = json_data["url"]
         @html_url = json_data["html_url"]
-        @created_at = Time.parse(json_data["created_at"]) rescue nil
-        @updated_at = Time.parse(json_data["updated_at"]) rescue nil
+        @created_at = begin
+          Time.parse(json_data["created_at"])
+        rescue
+          nil
+        end
+        @updated_at = begin
+          Time.parse(json_data["updated_at"])
+        rescue
+          nil
+        end
       end
     end
   end

@@ -2,7 +2,6 @@ module GHX
   class ProjectItem
     attr_accessor :id, :project_id, :issue_number, :issue_title, :issue_url, :issue_state, :field_values, :field_map
 
-
     def initialize(field_configuration:, data:)
       _setup_field_configuration(field_configuration)
 
@@ -28,7 +27,7 @@ module GHX
 
         name = normalized_field_value_name(field["field"]["name"])
 
-        self.public_send("#{name}=", extracted_field_value(field))
+        public_send(:"#{name}=", extracted_field_value(field))
       rescue NoMethodError
         GHX.logger.warn "Could not find field name: #{field["field"]["name"]} in the field configuration for project item #{id}"
       end
@@ -56,27 +55,26 @@ module GHX
         else
           GHX.logger.warn "Unknown field type in update: #{field_type}"
         end
-
       end
     end
 
     def update_text_field(field_id, value)
       gql_query = <<~GQL
-    mutation {
-      updateProjectV2ItemFieldValue(input: {
-        fieldId: "#{field_id}",
-        itemId: "#{id}",
-        projectId: "#{project_id}",
-        value: { 
-          text: "#{value}"
+        mutation {
+          updateProjectV2ItemFieldValue(input: {
+            fieldId: "#{field_id}",
+            itemId: "#{id}",
+            projectId: "#{project_id}",
+            value: { 
+              text: "#{value}"
+            }
+          }) {
+            projectV2Item {
+              id  
+            }
+          }
         }
-      }) {
-        projectV2Item {
-          id  
-        }
-      }
-    }
-    GQL
+      GQL
 
       client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
       res = client.query(gql_query)
@@ -86,21 +84,21 @@ module GHX
 
     def update_date_field(field_id, value)
       gql_query = <<~GQL
-    mutation {
-      updateProjectV2ItemFieldValue(input: {
-        fieldId: "#{field_id}",
-        itemId: "#{id}",
-        projectId: "#{project_id}",
-        value: { 
-          date: "#{value}"
+        mutation {
+          updateProjectV2ItemFieldValue(input: {
+            fieldId: "#{field_id}",
+            itemId: "#{id}",
+            projectId: "#{project_id}",
+            value: { 
+              date: "#{value}"
+            }
+          }) {
+            projectV2Item {
+              id  
+            }
+          }
         }
-      }) {
-        projectV2Item {
-          id  
-        }
-      }
-    }
-    GQL
+      GQL
 
       client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
       res = client.query(gql_query)
@@ -116,21 +114,21 @@ module GHX
       raise "Option not found: #{value}" unless option_id
 
       gql_query = <<~GQL
-    mutation {
-      updateProjectV2ItemFieldValue(input: {
-        fieldId: "#{field_id}",
-        itemId: "#{id}",
-        projectId: "#{project_id}",
-        value: { 
-          singleSelectOptionId: "#{option_id}"
+        mutation {
+          updateProjectV2ItemFieldValue(input: {
+            fieldId: "#{field_id}",
+            itemId: "#{id}",
+            projectId: "#{project_id}",
+            value: { 
+              singleSelectOptionId: "#{option_id}"
+            }
+          }) {
+            projectV2Item {
+              id  
+            }
+          }
         }
-      }) {
-        projectV2Item {
-          id  
-        }
-      }
-    }
-    GQL
+      GQL
 
       client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
       res = client.query(gql_query)
@@ -141,7 +139,7 @@ module GHX
     private
 
     def _setup_field_configuration(field_configuration)
-      @field_configuration = field_configuration.map{ |fc| fc.merge({normalized_name: normalized_field_value_name(fc[:name])})  }
+      @field_configuration = field_configuration.map { |fc| fc.merge({normalized_name: normalized_field_value_name(fc[:name])}) }
 
       # Example field_configuration:
       # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCno", :name=>"Title", :data_type=>"TITLE", :options=>nil}
@@ -207,6 +205,5 @@ module GHX
       field = @field_configuration.find { |f| f[:id] == field_id }
       field[:options] if field
     end
-
   end
 end

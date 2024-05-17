@@ -1,15 +1,15 @@
-require 'time'
-require 'net/http'
-require 'json'
-require 'octokit'
+require "time"
+require "net/http"
+require "json"
+require "octokit"
 
 require_relative "version"
-require_relative 'ghx/graphql_client'
-require_relative 'ghx/rest_client'
-require_relative 'ghx/dependabot'
-require_relative 'ghx/issue'
-require_relative 'ghx/project'
-require_relative 'ghx/project_item'
+require_relative "ghx/graphql_client"
+require_relative "ghx/rest_client"
+require_relative "ghx/dependabot"
+require_relative "ghx/issue"
+require_relative "ghx/project"
+require_relative "ghx/project_item"
 
 # GitHub eXtended API Interface
 #
@@ -47,6 +47,4 @@ module GHX
   def self.rest_client=(rest_client)
     @rest_client = rest_client
   end
-
-
 end

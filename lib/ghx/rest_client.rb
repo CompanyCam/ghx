@@ -1,4 +1,4 @@
-require 'net/http'
+require "net/http"
 
 module GHX
   class RestClient
@@ -17,7 +17,7 @@ module GHX
       request["X-Github-Api-Version"] = "2022-11-28"
 
       req_options = {
-        use_ssl: uri.scheme == "https",
+        use_ssl: uri.scheme == "https"
       }
 
       response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
@@ -36,7 +36,7 @@ module GHX
       request["X-Github-Api-Version"] = "2022-11-28"
 
       req_options = {
-        use_ssl: uri.scheme == "https",
+        use_ssl: uri.scheme == "https"
       }
 
       request.body = params.to_json
@@ -57,7 +57,7 @@ module GHX
       request["X-Github-Api-Version"] = "2022-11-28"
 
       req_options = {
-        use_ssl: uri.scheme == "https",
+        use_ssl: uri.scheme == "https"
       }
 
       request.body = params.to_json
@@ -68,6 +68,5 @@ module GHX
 
       JSON.parse(response.body)
     end
-
   end
 end

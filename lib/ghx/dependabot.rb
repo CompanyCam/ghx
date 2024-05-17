@@ -8,6 +8,6 @@ module GHX
   end
 end
 
-require_relative 'dependabot/alert'
-require_relative 'dependabot/package'
-require_relative 'dependabot/security_vulnerability'
+require_relative "dependabot/alert"
+require_relative "dependabot/package"
+require_relative "dependabot/security_vulnerability"
