@@ -1,7 +1,7 @@
 module GHX
   module Dependabot
     def self.get_alerts(owner:, repo:)
-      GHX.rest_get("repos/#{owner}/#{repo}/dependabot/alerts?state=open&per_page=100").map do |alert|
+      GHX.rest_client.get("repos/#{owner}/#{repo}/dependabot/alerts?state=open&per_page=100").map do |alert|
         GHX::Dependabot::Alert.new(alert)
       end
     end

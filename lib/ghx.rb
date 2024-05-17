@@ -3,6 +3,15 @@ require "net/http"
 require "json"
 require "octokit"
 
+class Hash
+  def symbolize_keys!
+    keys.each do |key|
+      self[key.to_sym] = delete(key)
+    end
+    self
+  end
+end
+
 require_relative "version"
 require_relative "ghx/graphql_client"
 require_relative "ghx/rest_client"
