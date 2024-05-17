@@ -1,30 +1,34 @@
-name: Push Gem
+# This does not work for some reason. I tried a million ways to follow the documentation but
+# I get the same error every time:
+# No trusted publisher configured for this workflow found on https://rubygems.org
 
-on:
-  push:
-    tags:
-      - v*
-
-permissions:
-  contents: read
-
-jobs:
-  push:
-    if: github.repository == 'CompanyCam/ghx'
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-      id-token: write
-
-    steps:
-      # Set up
-      - uses: actions/checkout@v4 # v4.1.5
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1 # v1.176.0
-        with:
-          bundler-cache: true
-          ruby-version: ruby
-
-      # Release
-      - uses: rubygems/release-gem@v1 # v1
+#name: Push Gem
+#
+#on:
+#  push:
+#    tags:
+#      - v*
+#
+#permissions:
+#  contents: read
+#
+#jobs:
+#  push:
+#    if: github.repository == 'CompanyCam/ghx'
+#    runs-on: ubuntu-latest
+#
+#    permissions:
+#      contents: write
+#      id-token: write
+#
+#    steps:
+#      # Set up
+#      - uses: actions/checkout@v4 # v4.1.5
+#      - name: Set up Ruby
+#        uses: ruby/setup-ruby@v1 # v1.176.0
+#        with:
+#          bundler-cache: true
+#          ruby-version: ruby
+#
+#      # Release
+#      - uses: rubygems/release-gem@v1 # v1
