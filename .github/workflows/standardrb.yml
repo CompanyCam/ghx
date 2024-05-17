@@ -4,10 +4,15 @@ name: Standardrb
 
 # Controls when the action will run.
 on:
-  pull_request:
+  push:
     paths-ignore:
-      - ".github/**"
-  workflow_dispatch:
+      - '.github/**'
+      - 'nginx/**'
+    branches: [main]
+  pull_request:
+    types: [opened, reopened, synchronize]
+  merge_group:
+    types: [checks_requested]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
