@@ -1,7 +1,6 @@
 module GHX
   # Module for Dependabot-related classes and methods
   module Dependabot
-
     # Get Dependabot alerts for a given repository
     #
     # @note ONLY RETURNS THE FIRST 100 ALERTS

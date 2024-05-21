@@ -1,5 +1,4 @@
 module GHX
-
   # A GitHub Project Item. This is a single item in a GitHub Project Board.
   #
   # ProjectsV2 are only available via the GraphQL API. This class wraps access to the API and provides a more OO interface.

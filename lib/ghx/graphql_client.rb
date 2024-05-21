@@ -1,8 +1,6 @@
 module GHX
-
   # Internal class to interact with the GitHub GraphQL API
   class GraphqlClient
-
     # @param api_key [String]
     def initialize(api_key)
       @api_key = api_key

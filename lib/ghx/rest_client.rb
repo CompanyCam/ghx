@@ -1,7 +1,6 @@
 require "net/http"
 
 module GHX
-
   # RestClient is a simple wrapper around Net::HTTP to make it easier to make API calls to the GitHub REST API.
   #
   # This is necessary because not all GitHub API endpoints are covered by Octokit.

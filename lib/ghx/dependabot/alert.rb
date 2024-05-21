@@ -115,7 +115,6 @@
 
 module GHX
   module Dependabot
-
     # A Dependabot Alert
     class Alert
       attr_reader :number, :state, :dependency, :security_advisory, :security_vulnerability, :url, :html_url, :created_at, :updated_at

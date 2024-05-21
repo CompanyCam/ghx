@@ -25,7 +25,6 @@ require_relative "ghx/project_item"
 # Extra classes to support more OO interfaces to the GitHub API. Wraps both the REST API and GraphQL API. Currently
 # incomplete. Functionality has been built for our existing use-cases, but nothing else.
 module GHX
-
   # Defaults to $stdout
   # @return [Logger]
   def self.logger
