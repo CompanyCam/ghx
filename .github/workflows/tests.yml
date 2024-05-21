@@ -29,4 +29,4 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - run: |
           bundle install
-          script/test
+          bundle exec rake test
