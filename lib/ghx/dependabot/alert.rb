@@ -115,9 +115,12 @@
 
 module GHX
   module Dependabot
+
+    # A Dependabot Alert
     class Alert
       attr_reader :number, :state, :dependency, :security_advisory, :security_vulnerability, :url, :html_url, :created_at, :updated_at
 
+      # @param json_data [Hash] The JSON data for the alert, from the API
       def initialize(json_data)
         @number = json_data["number"]
         @state = json_data["state"]

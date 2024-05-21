@@ -1,7 +1,15 @@
 module GHX
+
+  # A GitHub Project Item. This is a single item in a GitHub Project Board.
+  #
+  # ProjectsV2 are only available via the GraphQL API. This class wraps access to the API and provides a more OO interface.
+  #
+  # @note Access to ProjectItems should be done largely (if not always) through the Project class.
   class ProjectItem
     attr_accessor :id, :project_id, :issue_number, :issue_title, :issue_url, :issue_state, :field_values, :field_map
 
+    # @param field_configuration [Array<Hash>] An array of field configurations. These are the fields that are available to the Project Item. These are provided via the Project itself. It's much easier to access ProjectItems through the project because of this.
+    # @param data [Hash] The data from the GraphQL API.
     def initialize(field_configuration:, data:)
       _setup_field_configuration(field_configuration)
 
@@ -33,7 +41,11 @@ module GHX
       end
     end
 
-    # Updates the given fields to the given values. Makes a GraphQL call per field to do the update.
+    # Updates the given fields to the given values. Makes a GraphQL call *per field* to do the update.
+    #
+    # The implementation wraps access to the various types for each field. Since GraphQL requires us to type match on all
+    # requests, this gives us convenience, especially for things like a select field. We can pass in the value, and the
+    # method will find the ID of the option and update the field for us.
     #
     # @param fields [Hash] A hash of field names to values.
     def update(**fields)
@@ -138,23 +150,27 @@ module GHX
 
     private
 
+    # Parse the field_configuration and set up the instance variables and accessors.
+    #
+    # Example field_configuration:
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCno", :name=>"Title", :data_type=>"TITLE", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCns", :name=>"Assignees", :data_type=>"ASSIGNEES", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSzAZs", :name=>"Reported At", :data_type=>"DATE", :options=>nil}
+    # {:id=>"PVTSSF_lADOALH_aM4Ac-_zzgSxCnw", :name=>"Status", :data_type=>"SINGLE_SELECT", :options=>[{:id=>"f971fb55", :name=>"To triage"}, {:id=>"856cdede", :name=>"Ready to Assign"}, {:id=>"f75ad846", :name=>"Assigned"}, {:id=>"47fc9ee4", :name=>"Fix In progress"}, {:id=>"5ef0dc97", :name=>"Additional Info Requested"}, {:id=>"98236657", :name=>"Done - Fixed"}, {:id=>"98aea6ad", :name=>"Done - Won't Fix"}, {:id=>"a3b4fc3a", :name=>"Duplicate"}, {:id=>"81377549", :name=>"Not a Vulnerability"}]}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCn0", :name=>"Labels", :data_type=>"LABELS", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCn4", :name=>"Linked pull requests", :data_type=>"LINKED_PULL_REQUESTS", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCn8", :name=>"Milestone", :data_type=>"MILESTONE", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCoA", :name=>"Repository", :data_type=>"REPOSITORY", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCoM", :name=>"Reviewers", :data_type=>"REVIEWERS", :options=>nil}
+    # {:id=>"PVTSSF_lADOALH_aM4Ac-_zzgSxCuA", :name=>"Severity", :data_type=>"SINGLE_SELECT", :options=>[{:id=>"79628723", :name=>"Informational"}, {:id=>"153889c6", :name=>"Low"}, {:id=>"093709ee", :name=>"Medium"}, {:id=>"5a00bbe7", :name=>"High"}, {:id=>"00e0bbaf", :name=>"Critical"}, {:id=>"fd986bd9", :name=>"Duplicate"}]}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSzBcc", :name=>"Reporter", :data_type=>"TEXT", :options=>nil}
+    # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSzBho", :name=>"Resolve By", :data_type=>"DATE", :options=>nil}
+    # {:id=>"PVTSSF_lADOALH_aM4Ac-_zzgTKjOw", :name=>"Payout Status", :data_type=>"SINGLE_SELECT", :options=>[{:id=>"53c47c02", :name=>"Ready for Invoice"}, {:id=>"0b8a4629", :name=>"Payout in Process"}, {:id=>"5f356a58", :name=>"Payout Complete"}, {:id=>"368048ac", :name=>"Ineligible for Payout"}]}
+    #
+    #
     def _setup_field_configuration(field_configuration)
       @field_configuration = field_configuration.map { |fc| fc.merge({normalized_name: normalized_field_value_name(fc[:name])}) }
 
-      # Example field_configuration:
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCno", :name=>"Title", :data_type=>"TITLE", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCns", :name=>"Assignees", :data_type=>"ASSIGNEES", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSzAZs", :name=>"Reported At", :data_type=>"DATE", :options=>nil}
-      # {:id=>"PVTSSF_lADOALH_aM4Ac-_zzgSxCnw", :name=>"Status", :data_type=>"SINGLE_SELECT", :options=>[{:id=>"f971fb55", :name=>"To triage"}, {:id=>"856cdede", :name=>"Ready to Assign"}, {:id=>"f75ad846", :name=>"Assigned"}, {:id=>"47fc9ee4", :name=>"Fix In progress"}, {:id=>"5ef0dc97", :name=>"Additional Info Requested"}, {:id=>"98236657", :name=>"Done - Fixed"}, {:id=>"98aea6ad", :name=>"Done - Won't Fix"}, {:id=>"a3b4fc3a", :name=>"Duplicate"}, {:id=>"81377549", :name=>"Not a Vulnerability"}]}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCn0", :name=>"Labels", :data_type=>"LABELS", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCn4", :name=>"Linked pull requests", :data_type=>"LINKED_PULL_REQUESTS", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCn8", :name=>"Milestone", :data_type=>"MILESTONE", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCoA", :name=>"Repository", :data_type=>"REPOSITORY", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSxCoM", :name=>"Reviewers", :data_type=>"REVIEWERS", :options=>nil}
-      # {:id=>"PVTSSF_lADOALH_aM4Ac-_zzgSxCuA", :name=>"Severity", :data_type=>"SINGLE_SELECT", :options=>[{:id=>"79628723", :name=>"Informational"}, {:id=>"153889c6", :name=>"Low"}, {:id=>"093709ee", :name=>"Medium"}, {:id=>"5a00bbe7", :name=>"High"}, {:id=>"00e0bbaf", :name=>"Critical"}, {:id=>"fd986bd9", :name=>"Duplicate"}]}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSzBcc", :name=>"Reporter", :data_type=>"TEXT", :options=>nil}
-      # {:id=>"PVTF_lADOALH_aM4Ac-_zzgSzBho", :name=>"Resolve By", :data_type=>"DATE", :options=>nil}
-      # {:id=>"PVTSSF_lADOALH_aM4Ac-_zzgTKjOw", :name=>"Payout Status", :data_type=>"SINGLE_SELECT", :options=>[{:id=>"53c47c02", :name=>"Ready for Invoice"}, {:id=>"0b8a4629", :name=>"Payout in Process"}, {:id=>"5f356a58", :name=>"Payout Complete"}, {:id=>"368048ac", :name=>"Ineligible for Payout"}]}
       @field_configuration.each do |field|
         next unless field[:name]
         next if field[:name].to_s.empty?
