@@ -2,7 +2,6 @@ require "minitest/autorun"
 require "ghx"
 
 class CoreTest < Minitest::Test
-
   # The most basic test to ensure that the code loads
   def test_that_code_loads
     GHX::Issue.new(owner: "test", repo: "test", title: "test")
