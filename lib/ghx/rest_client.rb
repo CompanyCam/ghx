@@ -71,7 +71,7 @@ module GHX
 
       if response.code.to_i < 400
         response
-      elsif response.code.to_i == 403
+      elsif [403, 429].include?(response.code.to_i)
         if response["X-RateLimit-Remaining"].to_i == 0
           reset_time = Time.at(response["X-RateLimit-Reset"].to_i)
           raise GHX::RateLimitExceededError, "GitHub API rate limit exceeded. Try again after #{reset_time}"
@@ -82,6 +82,5 @@ module GHX
         raise GHX::OtherApiError, "GitHub API returned an error: #{response.code} #{response.body}"
       end
     end
-
   end
 end
