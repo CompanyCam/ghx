@@ -18,17 +18,8 @@ module GHX
     def get(path)
       uri = URI.parse("https://api.github.com/#{path}")
       request = Net::HTTP::Get.new(uri)
-      request["Accept"] = "application/vnd.github+json"
-      request["Authorization"] = "Bearer #{@api_key}"
-      request["X-Github-Api-Version"] = "2022-11-28"
 
-      req_options = {
-        use_ssl: uri.scheme == "https"
-      }
-
-      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-        http.request(request)
-      end
+      response = _http_request(uri: uri, request: request)
 
       JSON.parse(response.body)
     end
@@ -40,19 +31,10 @@ module GHX
     def post(path, params)
       uri = URI.parse("https://api.github.com/#{path}")
       request = Net::HTTP::Post.new(uri)
-      request["Accept"] = "application/vnd.github+json"
-      request["Authorization"] = "Bearer #{@api_key}"
-      request["X-Github-Api-Version"] = "2022-11-28"
-
-      req_options = {
-        use_ssl: uri.scheme == "https"
-      }
 
       request.body = params.to_json
 
-      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-        http.request(request)
-      end
+      response = _http_request(uri: uri, request: request)
 
       JSON.parse(response.body)
     end
@@ -64,6 +46,17 @@ module GHX
     def patch(path, params)
       uri = URI.parse("https://api.github.com/#{path}")
       request = Net::HTTP::Patch.new(uri)
+
+      request.body = params.to_json
+
+      response = _http_request(uri: uri, request: request)
+
+      JSON.parse(response.body)
+    end
+
+    private
+
+    def _http_request(uri:, request:)
       request["Accept"] = "application/vnd.github+json"
       request["Authorization"] = "Bearer #{@api_key}"
       request["X-Github-Api-Version"] = "2022-11-28"
@@ -72,13 +65,23 @@ module GHX
         use_ssl: uri.scheme == "https"
       }
 
-      request.body = params.to_json
-
       response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
         http.request(request)
       end
 
-      JSON.parse(response.body)
+      if response.code.to_i < 400
+        response
+      elsif response.code.to_i == 403
+        if response["X-RateLimit-Remaining"].to_i == 0
+          reset_time = Time.at(response["X-RateLimit-Reset"].to_i)
+          raise GHX::RateLimitExceededError, "GitHub API rate limit exceeded. Try again after #{reset_time}"
+        else
+          raise GHX::RateLimitExceededError, "GitHub API rate limit exceeded. Try again later."
+        end
+      else
+        raise GHX::OtherApiError, "GitHub API returned an error: #{response.code} #{response.body}"
+      end
     end
+
   end
 end
