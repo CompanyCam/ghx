@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Standardrb
+name: Tests
 
 # Controls when the action will run.
 on:
@@ -29,4 +29,4 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - run: |
           bundle install
-          bundle exec standardrb
+          bundle exec rake test
