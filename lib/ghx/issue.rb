@@ -13,10 +13,6 @@ module GHX
       data.fetch("items").to_a.map do |issue_data|
         new(owner: owner, repo: repo, **issue_data)
       end
-    rescue => e
-      GHX.logger.error "Error searching for issues with query: #{e.message}"
-      GHX.logger.error "Received data: #{data}"
-      []
     end
 
     # Find an issue by its number

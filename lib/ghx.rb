@@ -13,6 +13,7 @@ class Hash
 end
 
 require_relative "version"
+require_relative "ghx/errors"
 require_relative "ghx/graphql_client"
 require_relative "ghx/rest_client"
 require_relative "ghx/dependabot"
