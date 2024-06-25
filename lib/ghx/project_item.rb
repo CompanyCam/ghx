@@ -87,7 +87,7 @@ module GHX
         }
       GQL
 
-      client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
+      client = GHX.graphql
       res = client.query(gql_query)
       GHX.logger.debug "Update text field result"
       GHX.logger.debug res
@@ -111,7 +111,7 @@ module GHX
         }
       GQL
 
-      client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
+      client = GHX.graphql
       res = client.query(gql_query)
       GHX.logger.debug "Update date field result"
       GHX.logger.debug res
@@ -141,7 +141,7 @@ module GHX
         }
       GQL
 
-      client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
+      client = GHX.graphql
       res = client.query(gql_query)
       GHX.logger.debug "Update single select field result"
       GHX.logger.debug res.body

@@ -48,7 +48,7 @@ module GHX
         } 
       GQL
 
-      client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
+      client = GHX.graphql
       res = client.query(gql_query)
 
       data = JSON.parse(res.body)
@@ -177,7 +177,7 @@ module GHX
         }
       GQL
 
-      client = GraphqlClient.new(ENV["GITHUB_TOKEN"])
+      client = GHX.graphql
       res = client.query(gql_query)
 
       data = JSON.parse(res.body)

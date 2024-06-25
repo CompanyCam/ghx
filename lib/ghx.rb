@@ -41,7 +41,7 @@ module GHX
   # API Key defaults to ENV["GITHUB_TOKEN"]
   # @return [Octokit::Client]
   def self.octokit
-    @octokit ||= Octokit::Client.new(access_token: ENV["GITHUB_TOKEN"])
+    @octokit ||= Octokit::Client.new(access_token: self.octokit_token)
   end
 
   # @param octokit [Octokit::Client]
@@ -50,11 +50,21 @@ module GHX
     @octokit = octokit
   end
 
+  # @return [String] the API Key for the Octokit client
+  def self.octokit_token
+    @octokit_token ||= ENV["GITHUB_TOKEN"]
+  end
+
+  # @param new_token [String] the API Key for the Octokit client
+  def self.octokit_token=(new_token)
+    @octokit_token = new_token
+  end
+
   # Internal graphql client.
   # API Key defaults to ENV["GITHUB_TOKEN"]
   # @return [GHX::GraphqlClient]
   def self.graphql
-    @graphql ||= GHX::GraphqlClient.new(ENV["GITHUB_GRAPHQL_TOKEN"])
+    @graphql ||= GHX::GraphqlClient.new(self.graphql_token)
   end
 
   # @param graphql [GHX::GraphqlClient]
@@ -63,11 +73,22 @@ module GHX
     @graphql = graphql
   end
 
+  # @return [String] the API Key for the GraphQL client
+  def self.graphql_token
+    @graphql_token ||= ENV["GITHUB_GRAPHQL_TOKEN"]
+  end
+
+  # @param new_token [String] the API Key for the GraphQL client
+  # @return [String]
+  def self.graphql_token=(new_token)
+    @graphql_token = new_token
+  end
+
   # Internal graphql client.
   # API Key defaults to ENV["GITHUB_TOKEN"]
   # @return [GHX::RestClient]
   def self.rest_client
-    @rest_client ||= GHX::RestClient.new(ENV["GITHUB_TOKEN"])
+    @rest_client ||= GHX::RestClient.new(self.rest_client_token)
   end
 
   # @param rest_client [GHX::RestClient]
@@ -75,4 +96,16 @@ module GHX
   def self.rest_client=(rest_client)
     @rest_client = rest_client
   end
+
+  # @return [String] the API Key for the REST client
+  def self.rest_client_token
+    @rest_client_token ||= ENV["GITHUB_TOKEN"]
+  end
+
+  # @param new_token [String] the API Key for the REST client
+  # @return [String]
+  def self.rest_client_token=(new_token)
+    @rest_client_token = new_token
+  end
+
 end
