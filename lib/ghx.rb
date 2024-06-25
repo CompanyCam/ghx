@@ -41,7 +41,7 @@ module GHX
   # API Key defaults to ENV["GITHUB_TOKEN"]
   # @return [Octokit::Client]
   def self.octokit
-    @octokit ||= Octokit::Client.new(access_token: self.octokit_token)
+    @octokit ||= Octokit::Client.new(access_token: octokit_token)
   end
 
   # @param octokit [Octokit::Client]
@@ -64,7 +64,7 @@ module GHX
   # API Key defaults to ENV["GITHUB_TOKEN"]
   # @return [GHX::GraphqlClient]
   def self.graphql
-    @graphql ||= GHX::GraphqlClient.new(self.graphql_token)
+    @graphql ||= GHX::GraphqlClient.new(graphql_token)
   end
 
   # @param graphql [GHX::GraphqlClient]
@@ -88,7 +88,7 @@ module GHX
   # API Key defaults to ENV["GITHUB_TOKEN"]
   # @return [GHX::RestClient]
   def self.rest_client
-    @rest_client ||= GHX::RestClient.new(self.rest_client_token)
+    @rest_client ||= GHX::RestClient.new(rest_client_token)
   end
 
   # @param rest_client [GHX::RestClient]
@@ -107,5 +107,4 @@ module GHX
   def self.rest_client_token=(new_token)
     @rest_client_token = new_token
   end
-
 end
