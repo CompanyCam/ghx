@@ -185,7 +185,7 @@ module GHX
     end
 
     def normalized_field_value_name(name)
-      name.tr(" ", "_").downcase
+      name.tr(" ", "_").tr("-", "_").downcase
     end
 
     # Extracts the value from the field based on the field's data type. Thank you GraphQL for making this totally asinine.
